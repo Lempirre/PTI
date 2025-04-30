@@ -1,141 +1,75 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
-  Button,
-  FlatList,
-  StyleSheet,
   TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-
 import { router } from "expo-router";
 
-import LocationScreen from "@/app/(tabs)/location";
-
-type Fiche = {
-  id: number;
-  composants: string[];
-};
+const cards = [
+  {
+    title: "💪 Analyse du mouvement",
+    route: "/motionDetection",
+    color: "#2ecc71",
+  },
+  { title: "📈 Statistiques", route: "/statistiques", color: "#f39c12" },
+  { title: "👤 Profil", route: "/profil", color: "#9b59b6" },
+];
 
 const IndexScreen = () => {
-  const navigation = useNavigation();
-
-  const [fiches, setFiches] = useState([
-    { id: 1, composants: ["Composant A", "Composant B"] },
-  ]);
-
-  const ajouterFiche = () => {
-    const newId = fiches.length ? fiches[fiches.length - 1].id + 1 : 1;
-    setFiches([...fiches, { id: newId, composants: [] }]);
-  };
-
-  const supprimerFiche = (id: number) => {
-    setFiches(fiches.filter((fiche) => fiche.id !== id));
-  };
-
-  const ajouterComposant = (ficheId: number) => {
-    setFiches(
-      fiches.map((fiche) => {
-        if (fiche.id === ficheId) {
-          return {
-            ...fiche,
-            composants: [
-              ...fiche.composants,
-              `Composant ${fiche.composants.length + 1}`,
-            ],
-          };
-        }
-        return fiche;
-      })
-    );
-  };
-
-  const supprimerComposant = (ficheId: number) => {
-    setFiches(
-      fiches.map((fiche) => {
-        if (fiche.id === ficheId && fiche.composants.length > 0) {
-          return {
-            ...fiche,
-            composants: fiche.composants.slice(0, -1),
-          };
-        }
-        return fiche;
-      })
-    );
-  };
-
-  const renderFiche = ({ item }: { item: Fiche }) => (
-    <View style={styles.card}>
-      <Text style={styles.cardTitle}>Fiche #{item.id}</Text>
-      {item.composants.map((c, idx) => (
-        <Text key={idx} style={styles.componentText}>
-          {c}
-        </Text>
-      ))}
-      <View style={styles.buttonRow}>
-        <Button
-          title="Ajouter composant"
-          onPress={() => ajouterComposant(item.id)}
-        />
-        <Button
-          title="Supprimer composant"
-          onPress={() => supprimerComposant(item.id)}
-        />
-      </View>
-      <Button
-        color="red"
-        title="Supprimer fiche"
-        onPress={() => supprimerFiche(item.id)}
-      />
-    </View>
-  );
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Fiches d'identité des composants</Text>
-      <FlatList
-        data={fiches}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderFiche}
-      />
-      <View style={styles.bottomButtons}>
-        <Button title="Ajouter une fiche" onPress={ajouterFiche} />
-        <TouchableOpacity
-          style={styles.rentButton}
-          onPress={() => router.push("/location")}
-        >
-          <Text style={styles.rentButtonText}>→ Aller à la location</Text>
-        </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.header}>Bienvenue sur AI Kido 🏋️‍♂️</Text>
+      <View style={styles.cardContainer}>
+        {cards.map((card, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[styles.card, { backgroundColor: card.color }]}
+            onPress={() => router.push(card.route)}
+          >
+            <Text style={styles.cardText}>{card.title}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 20, flex: 1 },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
+  container: {
+    flex: 1,
+    backgroundColor: "#f4f6f8",
+    paddingTop: 50,
+    paddingHorizontal: 20,
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 30,
+    color: "#2c3e50",
+  },
+  cardContainer: {
+    flex: 1,
+    justifyContent: "space-around",
+  },
   card: {
-    backgroundColor: "#f0f0f0",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
+    paddingVertical: 30,
+    borderRadius: 15,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 3,
   },
-  cardTitle: { fontSize: 18, fontWeight: "600", marginBottom: 5 },
-  componentText: { fontSize: 16, marginLeft: 10 },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 10,
+  cardText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#fff",
   },
-  bottomButtons: { marginTop: 20 },
-  rentButton: {
-    marginTop: 10,
-    backgroundColor: "#4a90e2",
-    padding: 12,
-    borderRadius: 8,
-  },
-  rentButtonText: { color: "white", textAlign: "center", fontWeight: "bold" },
 });
 
 export default IndexScreen;
