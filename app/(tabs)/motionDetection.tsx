@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-const LocationScreen = () => {
+const MotionDetection = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Page de location de composants</Text>
+      <Text style={styles.text}>Page où implémenter le modèle IA</Text>
     </View>
   );
 };
@@ -14,4 +14,4 @@ const styles = StyleSheet.create({
   text: { fontSize: 20 },
 });
 
-export default LocationScreen;
+export default MotionDetection;
