@@ -10,14 +10,14 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { router } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const pathname = usePathname(); // 🔍 Récupère la route actuelle
+  const pathname = usePathname();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -32,7 +32,19 @@ export default function RootLayout() {
     return null;
   }
 
-  // 🚀 Ajout du Footer (seulement si la route n'est pas "/")
+  // Navbar simple en haut
+  const NavBar = () => (
+  <View style={styles.navbar}>
+    <Image
+      source={require("../assets/images/Logo_AiKido.png")} // remplace par ton image
+      style={styles.navImage}
+      resizeMode="contain"
+    />
+    <Text style={styles.navText}>AI Kido</Text>
+  </View>
+);
+
+  // Footer conditionnel
   const Footer = () =>
     pathname !== "/" && (
       <View style={styles.footer}>
@@ -40,26 +52,49 @@ export default function RootLayout() {
           style={styles.footerButton}
           onPress={() => router.push("/")}
         >
-          <Text style={styles.footerText}>retour à l'Accueil</Text>
+          <Text style={styles.footerText}>Retour à l'Accueil</Text>
         </TouchableOpacity>
-        
       </View>
     );
 
   return (
     <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
+      {/* Navbar toujours visible */}
+      <NavBar />
+
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="not-found" />
       </Stack>
+
       <StatusBar style="auto" />
-      {/* 🚀 Intégration du Footer (si la route est différente de "/") */}
+
+      {/* Footer conditionnel */}
       <Footer />
     </ThemeProvider>
   );
 }
 
 const styles = StyleSheet.create({
+  navbar: {
+    height: 60,
+    backgroundColor: "blue",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingHorizontal: 20,
+    paddingTop: 10, // pour compenser notch si besoin
+  },
+  navText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  navImage: {
+  width: 40,
+  height: 40,
+  marginRight: 10,  // espace entre l'image et le texte
+  },
   footer: {
     position: "absolute",
     bottom: 0,

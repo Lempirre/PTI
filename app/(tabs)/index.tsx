@@ -40,9 +40,10 @@ const IndexScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f4f6f8",
+    //backgroundColor: "#f4f6f8",
     paddingTop: 50,
     paddingHorizontal: 20,
+    backgroundColor: "#eeebeb",
   },
   header: {
     fontSize: 28,

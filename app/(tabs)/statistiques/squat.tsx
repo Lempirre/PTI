@@ -8,6 +8,9 @@ const MotionDetection = () => {
         <View style={styles.header}>
             <Text style={styles.text_title}>Bienvenue sur votre profil squat🏋️</Text>
         </View>
+        <View style={styles.middle}>
+            <Text style={styles.text_title}>Aucune donnée disponible pour cet exercice 😞</Text>
+        </View>
       </View>
    
   );
@@ -20,7 +23,8 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     justifyContent: "flex-start", 
-    alignItems: "center" 
+    alignItems: "center",
+    backgroundColor: "#eeebeb",
   },
   text: { 
     fontSize: 20 
@@ -40,6 +44,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 20,
   },
+  middle: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  }
 });
 
 export default MotionDetection;

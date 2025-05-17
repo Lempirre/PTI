@@ -8,6 +8,9 @@ const MotionDetection = () => {
         <View style={styles.header}>
             <Text style={styles.text_title}>Bienvenue sur votre profil hammer curl🏋️</Text>
         </View>
+        <View style={styles.header}>
+            <Text style={styles.text_title}>Graphe ou autre data à ajouter </Text>
+        </View>
       </View>
    
   );
@@ -20,7 +23,8 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     justifyContent: "flex-start", 
-    alignItems: "center" 
+    alignItems: "center", 
+    backgroundColor: "#eeebeb",
   },
   text: { 
     fontSize: 20 
