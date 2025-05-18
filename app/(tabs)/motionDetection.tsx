@@ -1,22 +1,24 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Text, StyleSheet, Button, Alert } from "react-native";
-import { Camera, CameraView, CameraType } from "expo-camera";
+import { CameraView, useCameraPermissions } from "expo-camera";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 
 const MotionDetection = () => {
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [facing, setFacing] = useState<"front" | "back">("back");
+  const [permission, requestPermission] = useCameraPermissions();
   const [showCamera, setShowCamera] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingStatus, setRecordingStatus] = useState<
     "idle" | "recording" | "saved"
   >("idle");
-  const cameraRef = useRef<any>(null);
+  const cameraRef = useRef<CameraView>(null);
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
+      if (!permission?.granted) {
+        await requestPermission();
+      }
     })();
   }, []);
 
@@ -27,70 +29,95 @@ const MotionDetection = () => {
       try {
         setIsRecording(true);
         setRecordingStatus("recording");
+
         const video = await cameraRef.current.recordAsync({ maxDuration: 10 });
-        console.log("Vidéo enregistrée temporairement :", video.uri);
-
-        // Générer un nom de fichier unique
-        const fileName = `video_${Date.now()}.mp4`;
-        const destinationUri = FileSystem.documentDirectory + fileName;
-
-        // Copier la vidéo vers le répertoire local
-        await FileSystem.copyAsync({
-          from: video.uri,
-          to: destinationUri,
-        });
-
-        Alert.alert(
-          "Vidéo enregistrée",
-          `Fichier sauvegardé :\n${destinationUri}`
-        );
-
-        setRecordingStatus("saved");
-
-        // Partager la vidéo
-        if (await Sharing.isAvailableAsync()) {
-          await Sharing.shareAsync(destinationUri);
-        } else {
-          Alert.alert(
-            "Partage non disponible",
-            "La fonction de partage n'est pas disponible sur cet appareil."
-          );
+        if (video) {
+          console.log("Vidéo enregistrée temporairement :", video.uri);
+          saveVideo(video.uri);
         }
       } catch (error) {
-        console.error("Erreur d'enregistrement :", error);
-        Alert.alert(
-          "Erreur",
-          "Une erreur est survenue pendant l'enregistrement."
-        );
-      } finally {
+        console.error("Erreur de démarrage d'enregistrement :", error);
+        Alert.alert("Erreur", "Impossible de démarrer l'enregistrement.");
         setIsRecording(false);
-        setTimeout(() => setRecordingStatus("idle"), 3000); // Réinitialiser le statut après 3 secondes
+        setRecordingStatus("idle");
       }
+    }
+  };
+
+  const saveVideo = async (videoUri: string) => {
+    try {
+      // Générer un nom de fichier unique
+      const fileName = `video_${Date.now()}.mp4`;
+      const destinationUri = FileSystem.documentDirectory + fileName;
+
+      // Copier la vidéo vers le répertoire local
+      await FileSystem.copyAsync({
+        from: videoUri,
+        to: destinationUri,
+      });
+
+      Alert.alert(
+        "Vidéo enregistrée",
+        `Fichier sauvegardé :\n${destinationUri}`
+      );
+
+      setRecordingStatus("saved");
+
+      // Partager la vidéo
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(destinationUri);
+      } else {
+        Alert.alert(
+          "Partage non disponible",
+          "La fonction de partage n'est pas disponible sur cet appareil."
+        );
+      }
+    } catch (error) {
+      console.error("Erreur de sauvegarde :", error);
+      Alert.alert("Erreur", "Une erreur est survenue pendant la sauvegarde.");
+    } finally {
+      setIsRecording(false);
+      setTimeout(() => setRecordingStatus("idle"), 3000); // Réinitialiser le statut après 3 secondes
     }
   };
 
   const stopRecording = async () => {
     if (cameraRef.current) {
-      cameraRef.current.stopRecording();
+      await cameraRef.current.stopRecording();
     }
   };
 
-  if (hasPermission === null) {
+  const toggleCameraFacing = () => {
+    setFacing((current) => (current === "back" ? "front" : "back"));
+  };
+
+  if (!permission) {
     return <Text>Demande de permission en cours...</Text>;
   }
 
-  if (!hasPermission) {
+  if (!permission.granted) {
     return <Text>Permission caméra refusée</Text>;
   }
 
   return (
     <View style={styles.container}>
-      {showCamera && <CameraView style={styles.camera} />}
+      {showCamera && (
+        <CameraView
+          mode="video"
+          style={styles.camera}
+          ref={cameraRef}
+          facing={facing}
+          mute={true}
+        />
+      )}
       <View style={styles.buttonContainer}>
         <Button
           title={showCamera ? "Fermer la caméra" : "Ouvrir la caméra"}
           onPress={() => setShowCamera(!showCamera)}
         />
+        {showCamera && (
+          <Button title="Changer de caméra" onPress={toggleCameraFacing} />
+        )}
         {showCamera && !isRecording && (
           <Button title="Enregistrer 10s" onPress={startRecording} />
         )}
@@ -125,6 +152,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 20,
     width: "100%",
+    gap: 10,
   },
   recordingText: {
     marginTop: 10,
