@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Text, StyleSheet, Button, Alert } from "react-native";
-import { Camera, CameraView, CameraType } from "expo-camera";
+import { Camera,  CameraType } from "expo-camera";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 
@@ -11,7 +11,7 @@ const MotionDetection = () => {
   const [recordingStatus, setRecordingStatus] = useState<
     "idle" | "recording" | "saved"
   >("idle");
-  const cameraRef = useRef<any>(null);
+  const cameraRef = useRef<Camera | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -22,7 +22,6 @@ const MotionDetection = () => {
 
 
   const startRecording = async () => {
-    console.log("test")
     console.log("cameraRef.current:", cameraRef.current);
     if (cameraRef.current) {
       try {
@@ -130,7 +129,11 @@ const MotionDetection = () => {
 
   return (
     <View style={styles.container}>
-      {showCamera && <CameraView style={styles.camera} />}
+      {showCamera && <Camera
+    ref={cameraRef}   // 🔥 Ici, on passe la ref
+    style={{ flex: 1 }}
+    type={CameraType.back} // 📸 Caméra arrière
+  />}
       <View style={styles.buttonContainer}>
         <Button
           title={showCamera ? "Fermer la caméra" : "Ouvrir la caméra"}
