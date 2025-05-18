@@ -21,6 +21,8 @@ const MotionDetection = () => {
   }, []);
 
   const startRecording = async () => {
+    console.log("Démarrage de l'enregistrement...");
+    console.log("Référence de la caméra :", cameraRef.current);
     if (cameraRef.current) {
       try {
         setIsRecording(true);
