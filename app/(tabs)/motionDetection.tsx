@@ -63,6 +63,9 @@ const MotionDetection = () => {
 
       setRecordingStatus("saved");
 
+      // Appel de l'upload vers le backend
+      await uploadVideo(destinationUri);
+      /*
       // Partager la vidéo
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(destinationUri);
@@ -71,7 +74,7 @@ const MotionDetection = () => {
           "Partage non disponible",
           "La fonction de partage n'est pas disponible sur cet appareil."
         );
-      }
+      }*/
     } catch (error) {
       console.error("Erreur de sauvegarde :", error);
       Alert.alert("Erreur", "Une erreur est survenue pendant la sauvegarde.");
@@ -81,6 +84,39 @@ const MotionDetection = () => {
     }
   };
 
+  const uploadVideo = async (videoUri: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("video", {
+        uri: videoUri,
+        name: "video.mp4",
+        type: "video/mp4",
+      });
+
+      // Remplacez par votre URL d'API
+      const response = await fetch("http://192.168.1.40:5000/process-video", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const responseData = await response.json();
+      
+      if (response.ok) {
+        Alert.alert("Succès", "Vidéo uploadée avec succès !");
+        console.log("Réponse du serveur ok");
+      } else {
+        Alert.alert("Erreur", responseData.message || "Échec de l'upload");
+        console.log("Réponse du serveur erreur pas ok:");
+      }
+    } catch (error) {
+      console.error("Erreur d'upload:", error);
+      Alert.alert("Erreur", "Échec de la communication avec le serveur");
+      console.log("Réponse du serveur erreur pas ok2");
+    }
+  };
   const stopRecording = async () => {
     if (cameraRef.current) {
       await cameraRef.current.stopRecording();
