@@ -20,9 +20,13 @@ const MotionDetection = () => {
     })();
   }, []);
 
+
   const startRecording = async () => {
+    console.log("test")
+    console.log("cameraRef.current:", cameraRef.current);
     if (cameraRef.current) {
       try {
+        console.log("test22")
         setIsRecording(true);
         setRecordingStatus("recording");
         const video = await cameraRef.current.recordAsync({ maxDuration: 10 });
@@ -45,6 +49,9 @@ const MotionDetection = () => {
 
         setRecordingStatus("saved");
 
+        // 🚀 **Appel API pour envoyer la vidéo au backend**
+        await uploadVideo(destinationUri);
+
         // Partager la vidéo
         if (await Sharing.isAvailableAsync()) {
           await Sharing.shareAsync(destinationUri);
@@ -64,6 +71,46 @@ const MotionDetection = () => {
         setIsRecording(false);
         setTimeout(() => setRecordingStatus("idle"), 3000); // Réinitialiser le statut après 3 secondes
       }
+    }
+    else {
+      console.log("Camera non disponible");
+    }
+  };
+
+  const uploadVideo = async (fileUri) => {
+    const formData = new FormData();
+    formData.append('video', {
+      uri: fileUri,
+      name: 'video.mp4',
+      type: 'video/mp4',
+    });
+
+    try {
+      const response = await fetch('http://192.168.1.40:5000/process-video', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const downloadUrl = URL.createObjectURL(blob);
+        console.log("Vidéo traitée reçue :", downloadUrl);
+
+        Alert.alert(
+          "Vidéo traitée",
+          "La vidéo a été traitée avec succès. Vérifiez les logs pour le lien."
+        );
+      } else {
+        console.error("Erreur lors de l'upload :", response.status);
+        Alert.alert("Erreur", "Le traitement de la vidéo a échoué.");
+      }
+    } catch (error) {
+      console.error("Erreur d'upload :", error);
+      Alert.alert("Erreur", "Impossible de communiquer avec le serveur.");
     }
   };
 
