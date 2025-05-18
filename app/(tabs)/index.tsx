@@ -16,7 +16,7 @@ const cards = [
   },
   { title: "📈 Statistiques", route: "/statistiques", color: "#f39c12" },
   { title: "👤 Profil", route: "/profil", color: "#9b59b6" },
-];
+] as const;
 
 const IndexScreen = () => {
   return (

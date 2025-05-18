@@ -34,15 +34,15 @@ export default function RootLayout() {
 
   // Navbar simple en haut
   const NavBar = () => (
-  <View style={styles.navbar}>
-    <Image
-      source={require("../assets/images/Logo_AiKido.png")} // remplace par ton image
-      style={styles.navImage}
-      resizeMode="contain"
-    />
-    <Text style={styles.navText}>AI Kido</Text>
-  </View>
-);
+    <View style={styles.navbar}>
+      <Image
+        source={require("../assets/images/Logo_AiKido.png")} // remplace par ton image
+        style={styles.navImage}
+        resizeMode="contain"
+      />
+      <Text style={styles.navText}>AI Kido</Text>
+    </View>
+  );
 
   // Footer conditionnel
   const Footer = () =>
@@ -52,7 +52,7 @@ export default function RootLayout() {
           style={styles.footerButton}
           onPress={() => router.push("/")}
         >
-          <Text style={styles.footerText}>Retour à l'Accueil</Text>
+          <Text style={styles.footerText}>Retour à l'accueil</Text>
         </TouchableOpacity>
       </View>
     );
@@ -91,9 +91,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   navImage: {
-  width: 40,
-  height: 40,
-  marginRight: 10,  // espace entre l'image et le texte
+    width: 40,
+    height: 40,
+    marginRight: 10, // espace entre l'image et le texte
   },
   footer: {
     position: "absolute",

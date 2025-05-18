@@ -119,7 +119,7 @@ const MotionDetection = () => {
           <Button title="Changer de caméra" onPress={toggleCameraFacing} />
         )}
         {showCamera && !isRecording && (
-          <Button title="Enregistrer 10s" onPress={startRecording} />
+          <Button title="Enregistrer une vidéo" onPress={startRecording} />
         )}
         {showCamera && isRecording && (
           <Button title="Stopper" onPress={stopRecording} color="red" />
