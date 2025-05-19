@@ -19,6 +19,7 @@ const MotionDetection = () => {
     null
   );
   const videoRef = useRef<Video>(null);
+  const [score, setScore] = useState<number | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -138,6 +139,7 @@ const MotionDetection = () => {
 
       // Mise à jour de l'état avec la nouvelle URI
       setProcessedVideoUri(processedUri);
+      setScore(responseData.Score);
       Alert.alert("Succès", "Vidéo traitée reçue avec succès !");
     } catch (error) {
       console.error("Erreur d'upload:", error);
@@ -214,9 +216,18 @@ const MotionDetection = () => {
               resizeMode={"contain" as any}
               isLooping
             />
+            {score !== null && (
+              <Text style={styles.scoreText}>
+                Score: {score.toFixed(1)}/100 {/* Assuming score is 0-100 */}
+              </Text>
+            )}
+
             <Button
               title="Effacer"
-              onPress={() => setProcessedVideoUri(null)}
+              onPress={() => {
+                setProcessedVideoUri(null);
+                setScore(null);
+              }}
               color="grey"
             />
           </View>
@@ -278,6 +289,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 5,
+  },
+  scoreText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#2ecc71",
+    marginVertical: 10,
+    textAlign: "center",
   },
 });
 
