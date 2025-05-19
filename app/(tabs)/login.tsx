@@ -19,7 +19,7 @@ const LoginScreen = () => {
       Alert.alert("Erreur", "Veuillez remplir tous les champs.");
     } else {
       if (email === "admin" || password === "admin") {
-        router.push("/");
+        router.push("/home");
       }
       Alert.alert("Succès", `Bienvenue ${email} !`);
     }
