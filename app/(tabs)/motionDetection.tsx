@@ -114,6 +114,14 @@ const MotionDetection = () => {
         throw new Error("Aucune donnée vidéo dans la réponse");
       }
 
+      if (!responseData.Score) {
+        throw new Error("Aucun score dans la réponse");
+      }
+
+      // Affichage du score dans une alerte
+      Alert.alert(`Votre score pour cette séance est de : ${responseData.Score}%`);
+
+      
       // Conversion base64 -> fichier vidéo
       const processedUri = FileSystem.documentDirectory + `processed_${Date.now()}.mp4`;
       await FileSystem.writeAsStringAsync(processedUri, responseData.video_base64, {
