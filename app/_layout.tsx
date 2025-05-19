@@ -77,13 +77,13 @@ export default function RootLayout() {
 
 const styles = StyleSheet.create({
   navbar: {
-    height: 60,
+    height: 90,
     backgroundColor: "blue",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
     paddingHorizontal: 20,
-    paddingTop: 10, // pour compenser notch si besoin
+    paddingTop: 30, // pour compenser notch si besoin
   },
   navText: {
     color: "white",
