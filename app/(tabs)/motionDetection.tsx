@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, Button, Alert } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
-import { Video } from 'expo-av';
-import { ScrollView } from 'react-native';
+import { Video } from "expo-av";
+import { ScrollView } from "react-native";
 
 const MotionDetection = () => {
   const [facing, setFacing] = useState<"front" | "back">("back");
@@ -15,7 +15,9 @@ const MotionDetection = () => {
     "idle" | "recording" | "saved"
   >("idle");
   const cameraRef = useRef<CameraView>(null);
-  const [processedVideoUri, setProcessedVideoUri] = useState<string | null>(null);
+  const [processedVideoUri, setProcessedVideoUri] = useState<string | null>(
+    null
+  );
   const videoRef = useRef<Video>(null);
 
   useEffect(() => {
@@ -97,7 +99,7 @@ const MotionDetection = () => {
         type: "video/mp4",
       } as any);
 
-      const response = await fetch("http://192.168.1.40:5000/process-video", {
+      const response = await fetch("http://192.168.25.55:5000/process-video", {
         method: "POST",
         body: formData,
       });
@@ -108,7 +110,7 @@ const MotionDetection = () => {
 
       // Récupération de la réponse JSON
       const responseData = await response.json();
-      
+
       // Vérification de la présence des données base64
       if (!responseData.video_base64) {
         throw new Error("Aucune donnée vidéo dans la réponse");
@@ -119,19 +121,24 @@ const MotionDetection = () => {
       }
 
       // Affichage du score dans une alerte
-      Alert.alert(`Votre score pour cette séance est de : ${responseData.Score}%`);
+      Alert.alert(
+        `Votre score pour cette séance est de : ${responseData.Score}%`
+      );
 
-      
       // Conversion base64 -> fichier vidéo
-      const processedUri = FileSystem.documentDirectory + `processed_${Date.now()}.mp4`;
-      await FileSystem.writeAsStringAsync(processedUri, responseData.video_base64, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+      const processedUri =
+        FileSystem.documentDirectory + `processed_${Date.now()}.mp4`;
+      await FileSystem.writeAsStringAsync(
+        processedUri,
+        responseData.video_base64,
+        {
+          encoding: FileSystem.EncodingType.Base64,
+        }
+      );
 
       // Mise à jour de l'état avec la nouvelle URI
       setProcessedVideoUri(processedUri);
       Alert.alert("Succès", "Vidéo traitée reçue avec succès !");
-
     } catch (error) {
       console.error("Erreur d'upload:", error);
       //Alert.alert("Erreur", error.message || "Échec de la communication avec le serveur");
@@ -158,9 +165,9 @@ const MotionDetection = () => {
   return (
     <View style={styles.mainContainer}>
       <ScrollView
-      contentContainerStyle={styles.scrollContainer}
-      showsVerticalScrollIndicator={false}
-    >
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {showCamera && (
           <CameraView
             mode="video"
@@ -187,10 +194,14 @@ const MotionDetection = () => {
         </View>
 
         {recordingStatus === "recording" && (
-          <Text style={styles.recordingText}>🎥 Enregistrement en cours...</Text>
+          <Text style={styles.recordingText}>
+            🎥 Enregistrement en cours...
+          </Text>
         )}
         {recordingStatus === "saved" && (
-          <Text style={styles.savedText}>✅ Vidéo sauvegardée avec succès !</Text>
+          <Text style={styles.savedText}>
+            ✅ Vidéo sauvegardée avec succès !
+          </Text>
         )}
         {processedVideoUri && (
           <View style={styles.videoContainer}>
@@ -202,7 +213,7 @@ const MotionDetection = () => {
               useNativeControls
               resizeMode={"contain" as any}
               isLooping
-            />  
+            />
             <Button
               title="Effacer"
               onPress={() => setProcessedVideoUri(null)}
@@ -228,7 +239,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     padding: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   camera: {
     width: "100%",
@@ -253,19 +264,19 @@ const styles = StyleSheet.create({
   },
   videoContainer: {
     marginTop: 20,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
   },
   video: {
     width: 300,
     height: 300,
-    backgroundColor: 'black',
+    backgroundColor: "black",
     borderRadius: 10,
     marginVertical: 10,
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
   },
 });
