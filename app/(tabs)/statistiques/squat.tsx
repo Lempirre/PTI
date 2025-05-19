@@ -1,18 +1,20 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 const MotionDetection = () => {
   return (
-    
-      <View style={styles.container}>
-        <View style={styles.header}>
-            <Text style={styles.text_title}>Bienvenue sur votre profil squat🏋️</Text>
-        </View>
-        <View style={styles.middle}>
-            <Text style={styles.text_title}>Aucune donnée disponible pour cet exercice 😞</Text>
-        </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.text_title}>
+          Bienvenue sur votre profil - Squats🏋️
+        </Text>
       </View>
-   
+      <View style={styles.middle}>
+        <Text style={styles.text_title}>
+          Aucune donnée disponible pour cet exercice 😞
+        </Text>
+      </View>
+    </View>
   );
 };
 
@@ -20,19 +22,19 @@ const styles = StyleSheet.create({
   header: {
     padding: 20,
   },
-  container: { 
-    flex: 1, 
-    justifyContent: "flex-start", 
+  container: {
+    flex: 1,
+    justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#eeebeb",
   },
-  text: { 
-    fontSize: 20 
+  text: {
+    fontSize: 20,
   },
-  text_title: { 
-    fontSize: 40, 
-    fontWeight: "bold", 
-    marginTop: 50 
+  text_title: {
+    fontSize: 40,
+    fontWeight: "bold",
+    marginTop: 50,
   },
   input: {
     height: 50,
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-  }
+  },
 });
 
 export default MotionDetection;
